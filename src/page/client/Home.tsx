@@ -1,6 +1,7 @@
 import Carousel from "../../components/client/Carousel";
 import ContainerProduct from "../../components/client/ContainerProduct";
 import ContainerProduct2 from "../../components/client/ContainerProduct2";
+import News from "../../components/client/News";
 import SlideCategory from "../../components/client/SlideCategory";
 import TabsCategory from "../../components/client/TabsCategory";
 import TodaySuggest from "../../components/client/TodaySuggest";
@@ -58,6 +59,9 @@ const Home = () => {
       </div>
       <div className="my-3">
         <TodaySuggest />
+      </div>
+      <div className="my-3">
+        <News />
       </div>
     </div>
   );
