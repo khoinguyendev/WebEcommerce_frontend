@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 import ItemProductSlide from "./ItemProductSlide";
+import SwiperWrapper from "./SwiperWrapper";
 const products = [
   {
     image: "https://sadesign.vn/pictures/picfullsizes/2024/11/30/ybd1732939646.jpg",
@@ -33,6 +35,10 @@ const products = [
     name: "Danh mục 8",
   },
 ];
+const images = [
+  "https://bizweb.dktcdn.net/100/429/689/themes/869367/assets/banner_fashion_1.jpg?1705909623213",
+  "https://bizweb.dktcdn.net/100/429/689/themes/869367/assets/banner_fashion_1.jpg?1705909623213",
+];
 const ContainerProduct2 = () => {
   return (
     <div>
@@ -40,18 +46,14 @@ const ContainerProduct2 = () => {
         <button className="bg-primary text-white px-5 py-2 font-bold rounded-t-lg">Đồ công nghệ</button>
       </h2>
       <div className="grid grid-cols-12 py-2">
-        <div className="hidden col-span-4 lg:block">
-          <a className="block" href="#" title="Săn sale thả ga">
-            <img
-              className="lazyload loaded"
-              width={280}
-              height={310}
-              src="//bizweb.dktcdn.net/100/429/689/themes/869367/assets/banner_1.jpg?1705909623213"
-              data-src="//bizweb.dktcdn.net/100/429/689/themes/869367/assets/banner_1.jpg?1705909623213"
-              alt="Săn sale thả ga"
-              data-was-processed="true"
-            />
-          </a>
+        <div className="hidden col-span-4 lg:flex py-2">
+          <SwiperWrapper slidesPerView={1} spaceBetween={0} loop={false} pagination={true} navigation={false}>
+            {images.map((item, index) => (
+              <Link to="#">
+                <img className="lazyload loaded w-full object-cover h-full" src={item} alt="Slide 1" data-src={item} data-was-processed="true" />
+              </Link>
+            ))}
+          </SwiperWrapper>
         </div>
 
         {products.map((item, index) => (

@@ -21,6 +21,7 @@ const SwiperWrapper = ({ children, pagination = true, slidesPerView = 1, loop = 
       pagination={pagination ? { clickable: true } : undefined} // Chỉ thêm pagination khi cần
       loop={loop}
       navigation={navigation ? true : undefined}
+      // className="h-full"
     >
       {children.map((child, index) => (
         <SwiperSlide key={index}>{child}</SwiperSlide>
