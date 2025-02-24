@@ -10,6 +10,7 @@ import Dashboard from "./page/admin/Dashboard";
 import LoginAdmin from "./page/admin/LoginAdmin";
 import PrivateRouter from "./util/PrivateRouter";
 import PageTitle from "./util/PageTitle";
+import ProductDetail from "./page/client/ProductDetail";
 
 function App() {
   const router = createBrowserRouter([
@@ -41,6 +42,15 @@ function App() {
             <>
               <PageTitle title="Đăng kí" />
               <Register />
+            </>
+          ),
+        },
+        {
+          path: "/san-pham",
+          element: (
+            <>
+              <PageTitle title="Sản phẩm" />
+              <ProductDetail />
             </>
           ),
         },
