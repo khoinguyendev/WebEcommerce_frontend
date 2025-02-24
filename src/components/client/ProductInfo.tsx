@@ -32,7 +32,7 @@ const ProductInfo = () => {
       <div className="my-2">
         <p>
           <span className="text-green_btn text-sm">Tiết kiệm:</span>
-          <span className="text-primary font-bold text-sm"> 1.500.000</span>
+          <span className="text-primary font-bold text-sm line-through"> 1.500.000</span>
         </p>
       </div>
       <div className="flex items-center">
