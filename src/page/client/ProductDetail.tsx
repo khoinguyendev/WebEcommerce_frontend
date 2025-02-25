@@ -1,3 +1,4 @@
+import Bread from "../../components/client/Bread";
 import DescriptionProduct from "../../components/client/DescriptionProduct";
 import ProductImage from "../../components/client/ProductImage";
 import ProductInfo from "../../components/client/ProductInfo";
@@ -14,13 +15,7 @@ const ProductDetail = () => {
   return (
     <div>
       <div className="custom-container py-4">
-        <div className="flex gap-3">
-          <span className="text-gray1">Trang chủ</span>
-          <span className="text-gray1">/</span>
-          <span className="text-gray1">Trang chủ</span>
-          <span className="text-gray1">/</span>
-          <span className="text-gray1">Trang chủ</span>
-        </div>
+        <Bread title="Sản phẩm" />
         <div className="grid grid-cols-12 gap-3">
           <div className="col-span-9">
             <div className="grid grid-cols-12">

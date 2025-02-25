@@ -11,6 +11,7 @@ import LoginAdmin from "./page/admin/LoginAdmin";
 import PrivateRouter from "./util/PrivateRouter";
 import PageTitle from "./util/PageTitle";
 import ProductDetail from "./page/client/ProductDetail";
+import ProductCategory from "./page/client/ProductCategory";
 
 function App() {
   const router = createBrowserRouter([
@@ -51,6 +52,15 @@ function App() {
             <>
               <PageTitle title="Sản phẩm" />
               <ProductDetail />
+            </>
+          ),
+        },
+        {
+          path: "/danh-muc",
+          element: (
+            <>
+              <PageTitle title="Danh mục" />
+              <ProductCategory />
             </>
           ),
         },
