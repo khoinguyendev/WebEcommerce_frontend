@@ -1,6 +1,7 @@
 import Logo from "@/assets/logo.webp";
 import CallSvg from "@/assets/call.svg";
 import User from "@/assets/users.svg";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -58,7 +59,7 @@ const Header = () => {
           </svg>
           <span className="w-[20px] h-[20px] absolute top-0 right-[-15px] rounded-full bg-primary text-white inline-block flex justify-center items-center">0</span>
         </div>
-        <div className="relative">
+        <Link to={"/cart"} className="block relative">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-8">
             <path
               strokeLinecap="round"
@@ -68,7 +69,7 @@ const Header = () => {
           </svg>
 
           <span className="w-[20px] h-[20px] absolute top-0 right-[-15px] rounded-full bg-primary text-white inline-block flex justify-center items-center">0</span>
-        </div>
+        </Link>
         <div className="relative">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-8">
             <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />

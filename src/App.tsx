@@ -12,6 +12,8 @@ import PrivateRouter from "./util/PrivateRouter";
 import PageTitle from "./util/PageTitle";
 import ProductDetail from "./page/client/ProductDetail";
 import ProductCategory from "./page/client/ProductCategory";
+import Search from "./page/client/Search";
+import Cart from "./page/client/Cart";
 
 function App() {
   const router = createBrowserRouter([
@@ -61,6 +63,24 @@ function App() {
             <>
               <PageTitle title="Danh mục" />
               <ProductCategory />
+            </>
+          ),
+        },
+        {
+          path: "/search",
+          element: (
+            <>
+              <PageTitle title="Tìm kiếm" />
+              <Search />
+            </>
+          ),
+        },
+        {
+          path: "/cart",
+          element: (
+            <>
+              <PageTitle title="Giỏ hàng" />
+              <Cart />
             </>
           ),
         },

@@ -14,7 +14,9 @@ export default {
         gray3: "#ebebeb",
         footer: "#24272e",
         tfooter: "#8b8e96",
-        green_btn: "#33b530"
+        green_btn: "#33b530",
+        yellow_btn: "#ffb416",
+        red: "#ff0000"
       },
       scale: {
         '110': '1.1',

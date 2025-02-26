@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const ItemProductSlide = ({ product }: any) => {
+const ItemProductSlide = ({ product, shadow = false }: any) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <Link to={"/"} className="block relative bg-white w-full p-2 " onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-      <div className="w-full h-[210px] mb-2 overflow-hidden">
+    <Link to={"/"} className={`block relative bg-white w-full p-2 ${shadow && "shadow-lg"} `} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <div className="w-full h-[230px] mb-2 overflow-hidden">
         <img className={`scale-100 w-full h-full object-cover ${open && "scale-125"} duration-500`} src={product.image} alt="Product" />
       </div>
       <div>
