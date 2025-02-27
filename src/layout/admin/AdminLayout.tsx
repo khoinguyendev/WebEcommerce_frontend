@@ -6,10 +6,22 @@ import SlideBar from "./SlideBar";
 const AdminLayout = () => {
   return (
     <div>
-      <SlideBar />
       <HeaderAdmin />
-      <Outlet />
-      <FooterAdmin />
+      <div className="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
+        <SlideBar />
+        <div className="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
+          <div className="main">
+            <Outlet />
+          </div>
+          <FooterAdmin />
+          <p className="my-10 text-sm text-center text-gray-500">
+            © 2019-2025{" "}
+            <a href="https://flowbite.com/" className="hover:underline" target="_blank">
+              khoinguyen dev
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
