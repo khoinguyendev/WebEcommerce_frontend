@@ -4,7 +4,7 @@ import Home from "./page/client/Home";
 import Login from "./page/client/Login";
 import Register from "./page/client/Register";
 import AdminLayout from "./layout/admin/AdminLayout";
-import Product from "./page/admin/Product";
+import Product from "./page/admin/product/Product";
 import Order from "./page/admin/Order";
 import Dashboard from "./page/admin/Dashboard";
 import LoginAdmin from "./page/admin/LoginAdmin";
@@ -14,6 +14,9 @@ import ProductDetail from "./page/client/ProductDetail";
 import ProductCategory from "./page/client/ProductCategory";
 import Search from "./page/client/Search";
 import Cart from "./page/client/Cart";
+import AddProduct from "./page/admin/product/AddProduct";
+import AddCategory from "./page/admin/category/AddCategory";
+import Category from "./page/admin/category/Category";
 
 function App() {
   return (
@@ -91,7 +94,10 @@ function App() {
         <Route path="/admin" element={<PrivateRouter />}>
           <Route element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
-            <Route path="product" element={<Product />} />
+            <Route path="crud/list/products" element={<Product />} />
+            <Route path="crud/create/products" element={<AddProduct />} />
+            <Route path="crud/list/category" element={<Category />} />
+            <Route path="crud/create/category" element={<AddCategory />} />
             <Route path="order" element={<Order />} />
           </Route>
         </Route>

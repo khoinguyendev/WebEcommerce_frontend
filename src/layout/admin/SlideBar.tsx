@@ -48,8 +48,17 @@ const SlideBar = () => {
                 </a>
               </li>
 
-              <Dropdown />
-              <Dropdown />
+              <Dropdown
+                item={{
+                  name: "Bảng",
+                  children: [
+                    { name: "User", link: "crud/list/users" },
+                    { name: "Product", link: "crud/list/products" },
+                    { name: "Category", link: "crud/list/category" },
+                  ],
+                }}
+              />
+              <Dropdown item={{ name: "Bảng" }} />
             </ul>
           </div>
         </div>

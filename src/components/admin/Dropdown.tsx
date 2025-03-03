@@ -1,9 +1,23 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
-const Dropdown = () => {
+interface Children {
+  name: string;
+  link: string;
+}
+
+interface Item {
+  name: string;
+  children?: Children[];
+}
+
+interface Prop {
+  item: Item; // Định nghĩa item đúng cách
+}
+const Dropdown = ({ item }: Prop) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <li onClick={() => setIsOpen((pre) => !pre)}>
+    <li onClick={item.children ? () => setIsOpen((pre) => !pre) : undefined}>
       <button
         type="button"
         className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
@@ -27,28 +41,23 @@ const Dropdown = () => {
         <span className="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>
           CRUD
         </span>
-        <svg sidebar-toggle-item className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-        </svg>
+        {item.children && (
+          <svg sidebar-toggle-item className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+        )}
       </button>
-      <ul id="dropdown-crud" className={`space-y-2 py-2 ${!isOpen ? "hidden" : ""}`}>
-        <li>
-          <a
-            href="https://flowbite-admin-dashboard.vercel.app/crud/products/"
-            className="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 "
-          >
-            Products
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://flowbite-admin-dashboard.vercel.app/crud/users/"
-            className="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 "
-          >
-            Users
-          </a>
-        </li>
-      </ul>
+      {item.children && (
+        <ul id="dropdown-crud" className={`space-y-2 py-2 ${!isOpen ? "hidden" : ""}`}>
+          {item.children.map((item, index: number) => (
+            <li>
+              <Link to={item.link} className="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 ">
+                {item.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </li>
   );
 };
