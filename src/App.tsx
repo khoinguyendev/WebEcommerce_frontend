@@ -17,6 +17,11 @@ import Cart from "./page/client/Cart";
 import AddProduct from "./page/admin/product/AddProduct";
 import AddCategory from "./page/admin/category/AddCategory";
 import Category from "./page/admin/category/Category";
+import EditCategory from "./page/admin/category/EditCategory";
+import Brand from "./page/admin/brand/Brand";
+import AddBrand from "./page/admin/brand/AddBrand";
+import EditBrand from "./page/admin/brand/EditBrand";
+import DeletedProduct from "./page/admin/product/DeletedProduct";
 
 function App() {
   return (
@@ -96,8 +101,13 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="crud/list/products" element={<Product />} />
             <Route path="crud/create/products" element={<AddProduct />} />
+            <Route path="crud/deleted/products" element={<DeletedProduct />} />
             <Route path="crud/list/category" element={<Category />} />
             <Route path="crud/create/category" element={<AddCategory />} />
+            <Route path="crud/edit/category/:id" element={<EditCategory />} />
+            <Route path="crud/list/brand" element={<Brand />} />
+            <Route path="crud/create/brand" element={<AddBrand />} />
+            <Route path="crud/edit/brand/:id" element={<EditBrand />} />
             <Route path="order" element={<Order />} />
           </Route>
         </Route>

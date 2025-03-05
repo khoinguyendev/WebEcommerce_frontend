@@ -55,6 +55,7 @@ const SlideBar = () => {
                     { name: "User", link: "crud/list/users" },
                     { name: "Product", link: "crud/list/products" },
                     { name: "Category", link: "crud/list/category" },
+                    { name: "Brand", link: "crud/list/brand" },
                   ],
                 }}
               />

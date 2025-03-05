@@ -8,7 +8,7 @@ import SnipperLoading from "../../../components/admin/SnipperLoading";
 import toast from "react-hot-toast";
 import ButtonLoading from "../../../components/admin/ButtonLoading";
 
-const Product = () => {
+const DeletedProduct = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
@@ -24,13 +24,13 @@ const Product = () => {
   const handleSelectItem = (id: number) => {
     setSelectedIds((prevSelected) => (prevSelected.includes(id) ? prevSelected.filter((selectedId) => selectedId !== id) : [...prevSelected, id]));
   };
-  const handleDeleteChecked = async () => {
+  const handleRestoreChecked = async () => {
     setIsLoadingDelete(true);
     try {
-      await axios.patch(`${SERVER_HOST}/products/change/all?status=DELETED`, { ids: selectedIds });
+      await axios.patch(`${SERVER_HOST}/products/change/all?status=INACTIVE`, { ids: selectedIds });
       setSelectedIds([]);
       setLoad((pre) => !pre);
-      toast.success("Đã xóa");
+      toast.success("Đã khôi phục");
     } catch (error) {
       console.log(error);
     } finally {
@@ -42,7 +42,7 @@ const Product = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${SERVER_HOST}/products`);
+        const response = await axios.get(`${SERVER_HOST}/products?status=DELETED`);
         setProducts(response.data.data);
       } catch (error) {
         console.log(error);
@@ -57,9 +57,9 @@ const Product = () => {
       <div className="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
         <div className="w-full mb-1">
           <div className="mb-4">
-            <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">All products</h1>
+            <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Thùng rác</h1>
           </div>
-          <div className="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
+          {/* <div className="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
             <div className="flex items-center mb-4 sm:mb-0">
               <form className="sm:pr-3" action="#" method="GET">
                 <label htmlFor="products-search" className="sr-only">
@@ -103,25 +103,38 @@ const Product = () => {
                 Add new product
               </Link>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="flex flex-col">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             {selectedIds.length > 0 && (
-              <button
-                onClick={() => handleDeleteChecked()}
-                className="my-2 text-white bg-[#c81e1e] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
-                type="button"
-                disabled={isLoadingDelete}
-                data-drawer-target="drawer-create-product-default"
-                data-drawer-show="drawer-create-product-default"
-                aria-controls="drawer-create-product-default"
-                data-drawer-placement="right"
-              >
-                {isLoadingDelete ? <ButtonLoading /> : "Xóa đã chọn"}
-              </button>
+              <>
+                <button
+                  className="my-2 text-white bg-[#c81e1e] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+                  type="button"
+                  disabled={isLoadingDelete}
+                  data-drawer-target="drawer-create-product-default"
+                  data-drawer-show="drawer-create-product-default"
+                  aria-controls="drawer-create-product-default"
+                  data-drawer-placement="right"
+                >
+                  {isLoadingDelete ? <ButtonLoading /> : "Xóa khỏi thùng rác"}
+                </button>
+                <button
+                  onClick={() => handleRestoreChecked()}
+                  className="m-2 text-white bg-green_btn focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+                  type="button"
+                  disabled={isLoadingDelete}
+                  data-drawer-target="drawer-create-product-default"
+                  data-drawer-show="drawer-create-product-default"
+                  aria-controls="drawer-create-product-default"
+                  data-drawer-placement="right"
+                >
+                  {isLoadingDelete ? <ButtonLoading /> : "Khôi phục"}
+                </button>
+              </>
             )}
             <div className="overflow-hidden shadow">
               <table className="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
@@ -172,7 +185,9 @@ const Product = () => {
                       </td>
                     </tr>
                   ) : (
-                    products?.map((product, index) => <ItemProduct key={product.id} selectedIds={selectedIds} handleSelectItem={handleSelectItem} product={product} stt={index + 1} />)
+                    products?.map((product, index) => (
+                      <ItemProduct key={product.id} selectedIds={selectedIds} setLoad={setLoad} handleSelectItem={handleSelectItem} product={product} stt={index + 1} />
+                    ))
                   )}
                 </tbody>
               </table>
@@ -184,4 +199,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default DeletedProduct;

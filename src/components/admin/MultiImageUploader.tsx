@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const MultiImageUploader = ({ setValue }: { setValue: any }) => {
+const MultiImageUploader = ({ setValue, resetTrigger }: { setValue: any; resetTrigger: boolean }) => {
   const [images, setImages] = useState<File[]>([]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,6 +18,10 @@ const MultiImageUploader = ({ setValue }: { setValue: any }) => {
     setValue("image", updatedImages);
   };
 
+  useEffect(() => {
+    setImages([]);
+    setValue("image", []);
+  }, [setValue, resetTrigger]);
   return (
     <div>
       <label className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md">

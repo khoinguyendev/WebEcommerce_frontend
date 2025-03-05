@@ -1,20 +1,20 @@
 import { Link } from "react-router-dom";
-import ItemCategory from "./ItemCategory";
 import { useEffect, useState } from "react";
-import { ICategory } from "../../../types/Category";
 import SnipperLoading from "../../../components/admin/SnipperLoading";
 import axios from "axios";
 import { SERVER_HOST } from "../../../config/Url";
+import ItemBrand from "./ItemBrand";
+import { IBrand } from "../../../types/Brand";
 
-const Category = () => {
-  const [categories, setCategories] = useState<ICategory[]>([]);
+const Brand = () => {
+  const [brands, setBrands] = useState<IBrand[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const responseCategory = await axios.get(`${SERVER_HOST}/category`);
-        setCategories(responseCategory.data.data);
+        const response = await axios.get(`${SERVER_HOST}/brand`);
+        setBrands(response.data.data);
       } catch (error) {
         console.log(error);
       } finally {
@@ -28,7 +28,7 @@ const Category = () => {
       <div className="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
         <div className="w-full mb-1">
           <div className="mb-4">
-            <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Tất cả danh mục</h1>
+            <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Tất cả thương hiệu</h1>
           </div>
           <div className="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
             <div className="flex items-center mb-4 sm:mb-0">
@@ -48,7 +48,7 @@ const Category = () => {
               </form>
             </div>
             <Link
-              to={"/admin/crud/create/category"}
+              to={"/admin/crud/create/brand"}
               id="createProductButton"
               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
               type="button"
@@ -57,7 +57,7 @@ const Category = () => {
               aria-controls="drawer-create-product-default"
               data-drawer-placement="right"
             >
-              Thêm danh mục
+              Thêm thương hiệu
             </Link>
           </div>
         </div>
@@ -86,10 +86,7 @@ const Category = () => {
                       <div className="flex items-cnter">STT</div>
                     </th>
                     <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                      Tên danh mục
-                    </th>
-                    <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                      Hình ảnh
+                      Tên thương hiệu
                     </th>
 
                     <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
@@ -108,7 +105,7 @@ const Category = () => {
                       </td>
                     </tr>
                   ) : (
-                    categories?.map((category, index) => <ItemCategory key={category.id} category={category} stt={index + 1} />)
+                    brands?.map((brand, index) => <ItemBrand key={brand.id} brand={brand} stt={index + 1} />)
                   )}
                 </tbody>
               </table>
@@ -120,4 +117,4 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default Brand;

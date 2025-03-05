@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
-import { SERVER_HOST } from "../../../config/Url";
-import { ICategory } from "../../../types/Category";
+import { IBrand } from "../../../types/Brand";
 import { formatDate } from "../../../util/Format";
-interface ItemCategoryProps {
-  category: ICategory;
+
+interface ItemBrandProps {
+  brand: IBrand;
   stt: number;
 }
-const ItemCategory = ({ category, stt }: ItemCategoryProps) => {
+const ItemBrand = ({ brand, stt }: ItemBrandProps) => {
   return (
     <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
       <td className="w-4 p-4">
@@ -25,14 +25,12 @@ const ItemCategory = ({ category, stt }: ItemCategoryProps) => {
       <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
         <div className="text-base font-semibold text-gray-900 dark:text-white">{stt}</div>
       </td>
-      <td className="text-base font-semibold text-gray-900 dark:text-white">{category.name}</td>
-      <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-        <img src={`${SERVER_HOST}/${category.image}`} alt="Uploaded" className="w-20 h-20 object-cover rounded" />
-      </td>
-      <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{formatDate(category.createdAt)}</td>
+      <td className="text-base font-semibold text-gray-900 dark:text-white">{brand.name}</td>
+      <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{formatDate(brand.createdAt)}</td>
+
       <td className="p-4 space-x-2 whitespace-nowrap">
         <Link
-          to={`/admin/crud/edit/category/${category.id}`}
+          to={`/admin/crud/edit/brand/${brand.id}`}
           className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-primary-700 dark:focus:ring-blue-800"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -57,4 +55,4 @@ const ItemCategory = ({ category, stt }: ItemCategoryProps) => {
   );
 };
 
-export default ItemCategory;
+export default ItemBrand;

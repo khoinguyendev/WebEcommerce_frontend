@@ -1,12 +1,20 @@
 import { useState, useEffect } from "react";
+import { SERVER_HOST } from "../../config/Url";
 
-const ImageUploader = ({ setValue, resetTrigger }: { setValue: any; resetTrigger: boolean }) => {
+interface ImageUploaderEditProps {
+  setValue: any;
+  defaultImage?: string;
+}
+
+const ImageUploaderEdit = ({ setValue, defaultImage }: ImageUploaderEditProps) => {
   const [image, setImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(defaultImage ? `${SERVER_HOST}/${defaultImage}` : null);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       setImage(file);
+      setPreviewImage(URL.createObjectURL(file)); // Hiển thị ảnh xem trước
       setValue("image", file);
       event.target.value = "";
     }
@@ -14,14 +22,9 @@ const ImageUploader = ({ setValue, resetTrigger }: { setValue: any; resetTrigger
 
   const removeImage = () => {
     setImage(null);
+    setPreviewImage(null);
     setValue("image", null);
   };
-
-  // ✅ Lắng nghe resetTrigger để reset ảnh khi form được reset
-  useEffect(() => {
-    setImage(null);
-    setValue("image", null);
-  }, [resetTrigger, setValue]);
 
   return (
     <div>
@@ -29,9 +32,10 @@ const ImageUploader = ({ setValue, resetTrigger }: { setValue: any; resetTrigger
         Chọn ảnh
         <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
       </label>
-      {image && (
+
+      {previewImage && (
         <div className="relative w-20 my-3">
-          <img src={URL.createObjectURL(image)} alt="Uploaded" className="w-20 h-20 object-cover rounded" />
+          <img src={previewImage} alt="Uploaded" className="w-20 h-20 object-cover rounded" />
           <button type="button" className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full p-1" onClick={removeImage}>
             X
           </button>
@@ -41,4 +45,4 @@ const ImageUploader = ({ setValue, resetTrigger }: { setValue: any; resetTrigger
   );
 };
 
-export default ImageUploader;
+export default ImageUploaderEdit;

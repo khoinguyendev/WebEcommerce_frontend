@@ -3,4 +3,5 @@ export type ICategory = {
   name: string;
   image: string;
   createdAt: string;
+  position: number | null;
 };
