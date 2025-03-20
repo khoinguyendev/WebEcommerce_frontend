@@ -11,6 +11,7 @@ import { useState } from "react";
 const productSchema = z.object({
   name: z.string().min(3, "Tên danh mục phải có ít nhất 3 ký tự"),
   image: z.instanceof(File, { message: "Vui lòng chọn 1 ảnh" }),
+  isShowHome: z.string(),
   position: z
     .preprocess((val) => {
       if (typeof val === "string" && val.trim() === "") return undefined;
@@ -34,6 +35,7 @@ const AddCategory = () => {
     defaultValues: {
       name: "",
       image: undefined,
+      isShowHome: "false",
     },
   });
   const [resetTrigger, setResetTrigger] = useState(false); // ✅ Thêm state resetTrigger
@@ -42,6 +44,7 @@ const AddCategory = () => {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("image", data.image);
+    formData.append("isShowHome", data.isShowHome);
     if (data.position !== undefined && data.position !== "") {
       formData.append("position", String(data.position));
     }
@@ -77,6 +80,38 @@ const AddCategory = () => {
             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Vị trí</label>
             <input {...register("position")} type="number" className="bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:text-white" />
             {errors.position && <p className="text-red text-sm mt-1">{errors.position.message}</p>}
+          </div>
+          <div className="mb-2">
+            <label htmlFor="category-create" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Hiển thị ở trang chủ
+            </label>
+            <div>
+              <div className="flex items-center mb-4">
+                <input
+                  {...register("isShowHome")}
+                  id="discount-no"
+                  type="radio"
+                  defaultChecked
+                  value="false"
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="discount-no" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                  Không
+                </label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  {...register("isShowHome")}
+                  id="discount-yes"
+                  type="radio"
+                  value="true"
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label htmlFor="discount-yes" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                  Có
+                </label>
+              </div>
+            </div>
           </div>
           {/* Nút submit */}
           <div className="flex gap-4 my-4">

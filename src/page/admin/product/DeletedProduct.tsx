@@ -24,6 +24,21 @@ const DeletedProduct = () => {
   const handleSelectItem = (id: number) => {
     setSelectedIds((prevSelected) => (prevSelected.includes(id) ? prevSelected.filter((selectedId) => selectedId !== id) : [...prevSelected, id]));
   };
+  const handleDelete = async () => {
+    setIsLoadingDelete(true);
+    try {
+      await axios.delete(`${SERVER_HOST}/products/remove/multiple`, {
+        data: { ids: selectedIds },
+      });
+      setSelectedIds([]);
+      setLoad((pre) => !pre);
+      toast.success("Đã xóa");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoadingDelete(false);
+    }
+  };
   const handleRestoreChecked = async () => {
     setIsLoadingDelete(true);
     try {
@@ -112,6 +127,7 @@ const DeletedProduct = () => {
             {selectedIds.length > 0 && (
               <>
                 <button
+                  onClick={() => handleDelete()}
                   className="my-2 text-white bg-[#c81e1e] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
                   type="button"
                   disabled={isLoadingDelete}

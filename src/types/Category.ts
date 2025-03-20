@@ -4,4 +4,5 @@ export type ICategory = {
   image: string;
   createdAt: string;
   position: number | null;
+  isShowHome: boolean;
 };

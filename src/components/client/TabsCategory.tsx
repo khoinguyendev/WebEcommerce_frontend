@@ -1,23 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SildeProduct from "./SildeProduct";
+import { SERVER_HOST } from "../../config/Url";
+import axios from "axios";
+import { ICategory } from "../../types/Category";
+import SnipperLoading from "../admin/SnipperLoading";
+import { IProduct } from "../../types/Product";
 
 const TabsCategory = () => {
-  const tabs = [
-    { id: 1, name: "Category 1", content: SildeProduct },
-    { id: 2, name: "Category 2", content: SildeProduct },
-    { id: 3, name: "Category 3", content: SildeProduct },
-  ];
+  const [activeTab, setActiveTab] = useState(1);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
 
-  const [activeTab, setActiveTab] = useState(tabs[0].id);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const responseCategory = await axios.get(`${SERVER_HOST}/category?limit=3&sort=position&order=ASC`);
+        const responseProduct = await axios.get(`${SERVER_HOST}/products?status=ACTIVE&categoryId=${responseCategory.data.data[0].id}`);
+        console.log({ responseProduct });
+        setProducts(responseProduct.data.data);
+        setCategories(responseCategory.data.data);
+        setActiveTab(responseCategory.data.data[0].id);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+  const getProductsTab = async (id: number) => {
+    setActiveTab(id);
+    const responseProduct = await axios.get(`${SERVER_HOST}/products?status=ACTIVE&categoryId=${id}`);
+    setProducts(responseProduct.data.data);
+  };
+  if (isLoading) return <SnipperLoading />;
 
   return (
     <div className="w-full">
       {/* Tabs Header */}
       <div className="grid grid-cols-3 ">
-        {tabs.map((tab) => (
+        {categories.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => getProductsTab(tab.id)}
             className={`p-3 text-center text-black font-medium transition-all ${activeTab === tab.id ? "bg-tabs rounded-t-lg text-white" : "bg-[#eaedf1] hover:bg-gray-200"}`}
           >
             {tab.name}
@@ -28,7 +56,7 @@ const TabsCategory = () => {
       {/* Tabs Content */}
       <div className="p-4 bg-tabs rounded-b-lg">
         {/* {tabs.map((tab: any) => (activeTab === tab.id ? <div key={tab.id}>{tab.content}</div> : null))} */}
-        <SildeProduct />
+        <SildeProduct products={products} />
       </div>
     </div>
   );

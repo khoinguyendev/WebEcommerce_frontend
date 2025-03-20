@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { IProduct } from "../../types/Product";
+import { SERVER_HOST } from "../../config/Url";
+import { formatCurrency } from "../../util/Format";
 
-const ItemProductSlide = ({ product, shadow = false }: any) => {
+const ItemProductSlide = ({ product, shadow = false }: { product: IProduct; shadow?: boolean }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <Link to={"/"} className={`block relative bg-white w-full p-2 ${shadow && "shadow-lg"} `} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-      <div className="w-full h-[230px] mb-2 overflow-hidden">
-        <img className={`scale-100 w-full h-full object-cover ${open && "scale-125"} duration-500`} src={product.image} alt="Product" />
+    <Link to={"/"} className={`block relative bg-white w-full rounded p-2 ${shadow && "shadow-lg"} `} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <div className="w-full h-[230px] p-3 mb-2 overflow-hidden">
+        <img className={`scale-100 w-full h-full object-cover ${open && "scale-110"} duration-500`} src={`${SERVER_HOST}/${JSON.parse(product.image)[0]}`} alt="Product" />
       </div>
       <div>
-        <p className="font-bold text-base leading-5 text-gray1 line-clamp-2">name name name name name name name name name</p>
-        <p className="text-primary font-bold">260.000.000</p>
+        <p className="font-bold text-[15px] leading-5 text-gray1 line-clamp-2 h-[40px]">{product.name}</p>
+        <p className="text-primary font-bold">{formatCurrency(product.price)}</p>
         <div className="flex justify-end">
           <button className={`relative px-1 py-1 rounded-md`}>
             <span className={`absolute z-10 inset-0 bg-[#ff0000] scale-0 transition-transform duration-500 rounded-md ${open && "scale-100"}`} style={{ transformOrigin: "center" }}></span>

@@ -22,6 +22,7 @@ import Brand from "./page/admin/brand/Brand";
 import AddBrand from "./page/admin/brand/AddBrand";
 import EditBrand from "./page/admin/brand/EditBrand";
 import DeletedProduct from "./page/admin/product/DeletedProduct";
+import EditProduct from "./page/admin/product/EditProduct";
 
 function App() {
   return (
@@ -101,6 +102,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="crud/list/products" element={<Product />} />
             <Route path="crud/create/products" element={<AddProduct />} />
+            <Route path="crud/edit/products/:id" element={<EditProduct />} />
             <Route path="crud/deleted/products" element={<DeletedProduct />} />
             <Route path="crud/list/category" element={<Category />} />
             <Route path="crud/create/category" element={<AddCategory />} />

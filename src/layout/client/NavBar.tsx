@@ -1,7 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ICategory } from "../../types/Category";
+import { SERVER_HOST } from "../../config/Url";
+import axios from "axios";
+import SnipperLoading from "../../components/admin/SnipperLoading";
+import { Link } from "react-router-dom";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const responseCategory = await axios.get(`${SERVER_HOST}/category`);
+        setCategories(responseCategory.data.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div className="bg-primary w-full hidden md:block">
       <div className="custom-container py-3 text-white  grid grid-cols-9">
@@ -12,10 +34,25 @@ const NavBar = () => {
 
           <p className="font-bold text-[15px]">Danh mục sản phẩm</p>
           <div className="absolute bg-transparent right-0 left-0 h-[10px] top-[20px]"></div>
-          <ul className={`absolute w-full z-10 top-[30px] text-white bg-black duration-300 ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-            <li className="p-2 hover:bg-gray-700">1</li>
-            <li className="p-2 hover:bg-gray-700">2</li>
-            <li className="p-2 hover:bg-gray-700">3</li>
+          <ul className={`absolute w-full z-10 top-[30px] shadow-lg text-black bg-white duration-300 ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+            {isLoading ? (
+              <SnipperLoading />
+            ) : (
+              <>
+                {categories.length === 0 ? (
+                  <p className="text-sm text-center">Không có danh mục nào</p>
+                ) : (
+                  categories.map((category) => (
+                    <li key={category.id} className="text-gray1 text-[15px] hover:bg-yellow_btn hover:text-white">
+                      <Link to="" className="flex items-center gap-2 p-2">
+                        <img className="h-[30px] w-[30px] object-cover rounded-full" src={`${SERVER_HOST}/${category.image}`} alt="..." />
+                        <span>{category.name}</span>
+                      </Link>
+                    </li>
+                  ))
+                )}
+              </>
+            )}
           </ul>
         </div>
         <div className="col-span-7">

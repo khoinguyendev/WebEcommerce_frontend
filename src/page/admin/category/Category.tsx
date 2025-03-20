@@ -91,7 +91,12 @@ const Category = () => {
                     <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                       Hình ảnh
                     </th>
-
+                    <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      Vị trí
+                    </th>
+                    <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                      Hiện ở trang chủ
+                    </th>
                     <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                       Ngày tạo
                     </th>

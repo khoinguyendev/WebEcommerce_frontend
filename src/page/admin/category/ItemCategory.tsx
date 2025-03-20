@@ -29,6 +29,9 @@ const ItemCategory = ({ category, stt }: ItemCategoryProps) => {
       <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
         <img src={`${SERVER_HOST}/${category.image}`} alt="Uploaded" className="w-20 h-20 object-cover rounded" />
       </td>
+      <td className="text-base font-semibold text-gray-900 dark:text-white">{category.position}</td>
+      <td className="text-base font-semibold text-gray-900 dark:text-white">{category.isShowHome ? "Có" : "Không"}</td>
+
       <td className="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{formatDate(category.createdAt)}</td>
       <td className="p-4 space-x-2 whitespace-nowrap">
         <Link

@@ -172,7 +172,9 @@ const Product = () => {
                       </td>
                     </tr>
                   ) : (
-                    products?.map((product, index) => <ItemProduct key={product.id} selectedIds={selectedIds} handleSelectItem={handleSelectItem} product={product} stt={index + 1} />)
+                    products?.map((product, index) => (
+                      <ItemProduct key={product.id} selectedIds={selectedIds} setLoad={setLoad} handleSelectItem={handleSelectItem} product={product} stt={index + 1} />
+                    ))
                   )}
                 </tbody>
               </table>
