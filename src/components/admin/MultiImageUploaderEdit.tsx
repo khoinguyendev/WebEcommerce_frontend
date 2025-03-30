@@ -39,7 +39,7 @@ const MultiImageUploaderEdit = ({ setValue, defaultImages, setImageDelete }: Ima
       <div className="mt-4 grid grid-cols-4 gap-2">
         {previewImage.map((image, index) => (
           <div key={index} className="relative">
-            <img src={`${SERVER_HOST}/${image}`} alt="Uploaded" className="w-full h-40 object-cover rounded" />
+            <img src={`${SERVER_HOST}/uploads/${image}`} alt="Uploaded" className="w-full h-40 object-cover rounded" />
             <button type="button" className="absolute top-0 right-0 bg-red text-white text-xs rounded-full p-1" onClick={() => removeImagePreview(index, image)}>
               X
             </button>

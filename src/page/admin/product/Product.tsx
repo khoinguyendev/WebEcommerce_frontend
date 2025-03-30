@@ -27,7 +27,7 @@ const Product = () => {
   const handleDeleteChecked = async () => {
     setIsLoadingDelete(true);
     try {
-      await axios.patch(`${SERVER_HOST}/products/change/all?status=DELETED`, { ids: selectedIds });
+      await axios.put(`${SERVER_HOST}/products/change/all?status=DELETED`, { ids: selectedIds });
       setSelectedIds([]);
       setLoad((pre) => !pre);
       toast.success("Đã xóa");
@@ -43,7 +43,7 @@ const Product = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(`${SERVER_HOST}/products`);
-        setProducts(response.data.data);
+        setProducts(response.data.data.content);
       } catch (error) {
         console.log(error);
       } finally {
@@ -139,7 +139,7 @@ const Product = () => {
                       <div className="flex items-cnter">STT</div>
                     </th>
                     <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                      Tên danh mục
+                      Tên sản phẩm
                     </th>
                     <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                       Hình ảnh

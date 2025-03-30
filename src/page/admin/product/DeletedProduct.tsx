@@ -42,7 +42,7 @@ const DeletedProduct = () => {
   const handleRestoreChecked = async () => {
     setIsLoadingDelete(true);
     try {
-      await axios.patch(`${SERVER_HOST}/products/change/all?status=INACTIVE`, { ids: selectedIds });
+      await axios.put(`${SERVER_HOST}/products/change/all?status=INACTIVE`, { ids: selectedIds });
       setSelectedIds([]);
       setLoad((pre) => !pre);
       toast.success("Đã khôi phục");
@@ -58,7 +58,7 @@ const DeletedProduct = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(`${SERVER_HOST}/products?status=DELETED`);
-        setProducts(response.data.data);
+        setProducts(response.data.data.content);
       } catch (error) {
         console.log(error);
       } finally {

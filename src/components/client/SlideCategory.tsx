@@ -13,8 +13,8 @@ const SlideCategory = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const responseCategory = await axios.get(`${SERVER_HOST}/category`);
-        setCategories(responseCategory.data.data);
+        const responseCategory = await axios.get(`${SERVER_HOST}/categories`);
+        setCategories(responseCategory.data.data.content);
       } catch (error) {
         console.log(error);
       } finally {

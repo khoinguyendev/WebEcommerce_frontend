@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { ICategory } from "../../../types/Category";
 import { IBrand } from "../../../types/Brand";
 import toast from "react-hot-toast";
+import FroalaEditors from "./FroalaEditor";
 
 // ✅ Định nghĩa schema validation bằng Zod
 const productSchema = z
@@ -27,6 +28,7 @@ const productSchema = z
     brandId: z.number().positive("Vui lòng chọn 1 thương hiệu"),
     isDiscount: z.string(),
     status: z.string(),
+    stock: z.number().min(0, "Số lượng >=0"),
   })
   .refine(
     (data) => {
@@ -35,7 +37,7 @@ const productSchema = z
       }
       return true;
     },
-    { message: "Giá sau khi giảm phải nhỏ hơn giá gốc", path: ["priceSale"] }
+    { message: "Giá sau khi giảm phải nhỏ hơn giá gốc", path: ["priceDiscount"] }
   );
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -59,20 +61,22 @@ const AddProduct = () => {
       brandId: 0,
       isDiscount: "false",
       image: [],
+      stock: 0,
     },
   });
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [brands, setBrands] = useState<IBrand[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [resetTrigger, setResetTrigger] = useState(false); // ✅ Thêm state resetTrigger
+  const [detail, setDetail] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const responseCategory = await axios.get(`${SERVER_HOST}/category`);
-        const categoryData = responseCategory.data.data;
-        const responseBrand = await axios.get(`${SERVER_HOST}/brand`);
+        const responseCategory = await axios.get(`${SERVER_HOST}/categories`);
+        const categoryData = responseCategory.data.data.content;
+        const responseBrand = await axios.get(`${SERVER_HOST}/brands`);
         const brandData = responseBrand.data.data;
         setCategories(categoryData);
         setBrands(brandData);
@@ -85,30 +89,32 @@ const AddProduct = () => {
     fetchData();
   }, []);
   const onSubmit = async (data: ProductFormValues) => {
-    console.log("Dữ liệu sản phẩm:", data);
     // Chuyển dữ liệu thành FormData
     const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("price", data.price.toString());
-    formData.append("isDiscount", data.isDiscount);
-    formData.append("categoryId", data.categoryId.toString());
-    formData.append("brandId", data.brandId.toString());
-    formData.append("status", data.status);
-    if (data.priceDiscount) formData.append("priceDiscount", data.priceDiscount.toString());
-    if (data.detail) formData.append("detail", data.detail);
-    if (data.description) formData.append("description", data.description);
+    const product = {
+      name: data.name,
+      price: data.price,
+      discount: data.isDiscount == "true" ? true : false,
+      categoryId: data.categoryId,
+      brandId: data.brandId,
+      status: data.status,
+      priceDiscount: data.priceDiscount,
+      detail: detail,
+      description: data.description,
+      stock: data.stock,
+    };
+    console.log("Dữ liệu sản phẩm:", product);
+    formData.append("product", new Blob([JSON.stringify(product)], { type: "application/json" }));
     // Đính kèm tất cả ảnh vào FormData
     data.image.forEach((file) => {
-      formData.append("image", file);
+      formData.append("files", file);
     });
-
     try {
       const response = await axios.post(`${SERVER_HOST}/products`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
       console.log("Phản hồi từ server:", response.data);
       reset();
       setResetTrigger((pre) => !pre);
@@ -141,7 +147,6 @@ const AddProduct = () => {
             <input {...register("name")} className="bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:text-white" placeholder="Nhập tên sản phẩm" />
             {errors.name && <p className="text-red text-sm mt-1">{errors.name.message}</p>}
           </div>
-
           {/* Giá sản phẩm */}
           <div className="mb-2">
             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá</label>
@@ -245,40 +250,14 @@ const AddProduct = () => {
             </div>
           )}
           <div className="mb-2">
-            <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Mô tả
-            </label>
-            <textarea
-              {...register("description")}
-              id="description"
-              rows={4}
-              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tồn kho</label>
+            <input
+              type="number"
+              {...register("stock", { valueAsNumber: true })}
+              className="bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:text-white"
+              placeholder="Nhập giá"
             />
-          </div>
-          <div className="mb-2">
-            <label htmlFor="detail" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Chi tiết
-            </label>
-            <textarea
-              {...register("detail")}
-              id="detail"
-              rows={4}
-              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            />
-          </div>
-          <div className="mb-2">
-            <label htmlFor="category-create" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Xuất bản
-            </label>
-            <select
-              defaultValue="INACTIVE"
-              {...register("status")}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            >
-              <option value="INACTIVE">Không xuất bản</option>
-              <option value="ACTIVE">Xuất bản</option>
-            </select>
-            {errors.categoryId && <p className="text-red text-sm mt-1">{errors.categoryId.message}</p>}
+            {errors.stock && <p className="text-red text-sm mt-1">{errors.stock.message}</p>}
           </div>
           {/* Nút submit */}
           <div className="flex gap-4 my-4">
@@ -303,6 +282,35 @@ const AddProduct = () => {
           <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ảnh sản phẩm</label>
           <MultiImageUploader setValue={setValue} resetTrigger={resetTrigger} />
           {errors.image && <p className="text-red text-sm mt-1">{errors.image.message}</p>}
+          <div className="mb-2">
+            <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Mô tả
+            </label>
+            <textarea
+              {...register("description")}
+              id="description"
+              rows={4}
+              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            />
+          </div>
+
+          <div className="mb-2">
+            <label htmlFor="category-create" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Xuất bản
+            </label>
+            <select
+              defaultValue="INACTIVE"
+              {...register("status")}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            >
+              <option value="INACTIVE">Không xuất bản</option>
+              <option value="ACTIVE">Xuất bản</option>
+            </select>
+            {errors.categoryId && <p className="text-red text-sm mt-1">{errors.categoryId.message}</p>}
+          </div>
+        </div>
+        <div className="col-span-2">
+          <FroalaEditors setDetail={setDetail} />
         </div>
       </form>
     </div>

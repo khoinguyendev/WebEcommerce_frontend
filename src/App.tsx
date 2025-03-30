@@ -23,13 +23,78 @@ import AddBrand from "./page/admin/brand/AddBrand";
 import EditBrand from "./page/admin/brand/EditBrand";
 import DeletedProduct from "./page/admin/product/DeletedProduct";
 import EditProduct from "./page/admin/product/EditProduct";
+import ProductToday from "./page/admin/productToday/ProductToday";
+import Banner from "./page/admin/banner/Banner";
+import AddBanner from "./page/admin/banner/AddBanner";
+import EditBanner from "./page/admin/banner/EditBanner";
+import Variant from "./page/admin/product/Variant";
+import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { SERVER_HOST } from "./config/Url";
+import axios from "axios";
+import { loginSuccess } from "./redux/authSlice";
+import Payment from "./page/client/Payment";
+import UserRouter from "./util/UserRouter";
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    const fetchData = async () => {
+      // if (token) {
+      //   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      //   dispatch(loginSuccess(token)); // Lưu token vào Redux store
+      // }
+      if (token) {
+        try {
+          const response = await axios.get(`${SERVER_HOST}/users/my-info`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(response);
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+          dispatch(loginSuccess({ token: token, user: response.data.data }));
+        } catch (error) {
+          localStorage.removeItem("token");
+          console.log(error);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+  if (isLoading) return;
+
   return (
     <Router>
       <Routes>
         {/* Client Routes */}
         <Route path="/" element={<AppLayout />}>
+          <Route element={<UserRouter />}>
+            <Route
+              path="cart"
+              element={
+                <>
+                  <PageTitle title="Giỏ hàng" />
+                  <Cart />
+                </>
+              }
+            />
+            <Route
+              path="thanh-toan"
+              element={
+                <>
+                  <PageTitle title="Thanh toán" />
+                  <Payment />
+                </>
+              }
+            />
+          </Route>
           <Route
             index
             element={
@@ -58,7 +123,7 @@ function App() {
             }
           />
           <Route
-            path="san-pham"
+            path="san-pham/:id"
             element={
               <>
                 <PageTitle title="Sản phẩm" />
@@ -84,15 +149,6 @@ function App() {
               </>
             }
           />
-          <Route
-            path="cart"
-            element={
-              <>
-                <PageTitle title="Giỏ hàng" />
-                <Cart />
-              </>
-            }
-          />
         </Route>
 
         {/* Admin Routes */}
@@ -101,6 +157,7 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="crud/list/products" element={<Product />} />
+            <Route path="crud/variant/products/:id" element={<Variant />} />
             <Route path="crud/create/products" element={<AddProduct />} />
             <Route path="crud/edit/products/:id" element={<EditProduct />} />
             <Route path="crud/deleted/products" element={<DeletedProduct />} />
@@ -110,6 +167,11 @@ function App() {
             <Route path="crud/list/brand" element={<Brand />} />
             <Route path="crud/create/brand" element={<AddBrand />} />
             <Route path="crud/edit/brand/:id" element={<EditBrand />} />
+            <Route path="crud/list/product-today" element={<ProductToday />} />
+            <Route path="crud/list/banners" element={<Banner />} />
+            <Route path="crud/create/banners" element={<AddBanner />} />
+            <Route path="crud/edit/banners/:id" element={<EditBanner />} />
+
             <Route path="order" element={<Order />} />
           </Route>
         </Route>

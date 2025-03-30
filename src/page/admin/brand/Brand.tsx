@@ -13,7 +13,7 @@ const Brand = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${SERVER_HOST}/brand`);
+        const response = await axios.get(`${SERVER_HOST}/brands`);
         setBrands(response.data.data);
       } catch (error) {
         console.log(error);

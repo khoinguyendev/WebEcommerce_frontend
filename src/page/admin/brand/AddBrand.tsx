@@ -29,13 +29,13 @@ const AddBrand = () => {
     // Chuyển dữ liệu thành FormData
 
     try {
-      const response = await axios.post(`${SERVER_HOST}/brand`, data);
+      const response = await axios.post(`${SERVER_HOST}/brands`, data);
 
       console.log("Phản hồi từ server:", response.data);
       toast.success("Thêm thành công");
       reset();
     } catch (error: any) {
-      if (error.response.data.statusCode === 409) toast.error("Tên đã tồn tại");
+      if (error.response.data.data.code === 404) toast.error("Tên đã tồn tại");
       else toast.error("Internal server error");
     }
   };

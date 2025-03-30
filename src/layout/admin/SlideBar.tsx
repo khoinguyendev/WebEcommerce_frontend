@@ -42,13 +42,12 @@ const SlideBar = () => {
                     <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
                   </svg>
-                  <span className="ml-3" sidebar-toggle-item>
-                    Dashboard
-                  </span>
+                  <span className="ml-3">Dashboard</span>
                 </a>
               </li>
 
               <Dropdown
+                key={1}
                 item={{
                   name: "Bảng",
                   children: [
@@ -56,14 +55,16 @@ const SlideBar = () => {
                     { name: "Product", link: "crud/list/products" },
                     { name: "Category", link: "crud/list/category" },
                     { name: "Brand", link: "crud/list/brand" },
+                    { name: "ProductToday", link: "crud/list/product-today" },
+                    { name: "Banner", link: "crud/list/banners" },
                   ],
                 }}
               />
-              <Dropdown item={{ name: "Bảng" }} />
+              <Dropdown key={2} item={{ name: "Bảng" }} />
             </ul>
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 justify-center hidden w-full p-4 space-x-4 bg-white lg:flex dark:bg-gray-800" sidebar-bottom-menu>
+        <div className="absolute bottom-0 left-0 justify-center hidden w-full p-4 space-x-4 bg-white lg:flex dark:bg-gray-800">
           <a href="#" className="inline-flex justify-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" />

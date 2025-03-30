@@ -14,8 +14,8 @@ const NavBar = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const responseCategory = await axios.get(`${SERVER_HOST}/category`);
-        setCategories(responseCategory.data.data);
+        const responseCategory = await axios.get(`${SERVER_HOST}/categories`);
+        setCategories(responseCategory.data.data.content);
       } catch (error) {
         console.log(error);
       } finally {
@@ -45,7 +45,7 @@ const NavBar = () => {
                   categories.map((category) => (
                     <li key={category.id} className="text-gray1 text-[15px] hover:bg-yellow_btn hover:text-white">
                       <Link to="" className="flex items-center gap-2 p-2">
-                        <img className="h-[30px] w-[30px] object-cover rounded-full" src={`${SERVER_HOST}/${category.image}`} alt="..." />
+                        <img className="h-[30px] w-[30px] object-cover rounded-full" src={`${SERVER_HOST}/uploads/${category.image}`} alt="..." />
                         <span>{category.name}</span>
                       </Link>
                     </li>

@@ -1,36 +1,51 @@
+import { useState } from "react";
 import SwiperWrapper from "./SwiperWrapper";
-const images = [
-  "https://sadesign.vn/pictures/picfullsizes/2024/11/30/ybd1732939646.jpg",
-  "https://sadesign.vn/pictures/picfullsizes/2024/11/30/ybd1732939646.jpg",
-  "https://sadesign.vn/pictures/picfullsizes/2024/11/30/ybd1732939646.jpg",
-  "https://sadesign.vn/pictures/picfullsizes/2024/11/30/ybd1732939646.jpg",
-  "https://sadesign.vn/pictures/picfullsizes/2024/11/30/ybd1732939646.jpg",
-  "https://sadesign.vn/pictures/picfullsizes/2024/11/30/ybd1732939646.jpg",
-  "https://sadesign.vn/pictures/picfullsizes/2024/11/30/ybd1732939646.jpg",
-];
-const ProductImage = () => {
+import { SERVER_HOST } from "../../config/Url";
+import { Swiper as SwiperClass } from "swiper";
+
+const ProductImage = ({ image }: { image: string | undefined }) => {
+  if (!image) return null;
+
+  const images = JSON.parse(image);
+  const [swiperInstance, setSwiperInstance] = useState<SwiperClass | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0); // Lưu index ảnh đang hiển thị
+
   return (
     <>
+      {/* Swiper chính hiển thị ảnh lớn */}
       <div>
-        <SwiperWrapper slidesPerView={1} spaceBetween={0} loop={false} pagination={false} navigation={false}>
-          {images.map((item, index) => (
-            <div className="w-full py-3" key={index}>
-              <img
-                className=" w-[350] object-cover h-[350px]"
-                src="https://bizweb.dktcdn.net/thumb/large/100/429/689/products/galaxy-s21-plus-5g-bac-didongviet-1-719e9485-fd05-4c6d-bd44-7e5f6ed19132.jpg?v=1623565400993"
-              />
+        <SwiperWrapper
+          slidesPerView={1}
+          spaceBetween={0}
+          loop={false}
+          pagination={false}
+          navigation={false}
+          onSwiper={(swiper) => {
+            setSwiperInstance(swiper);
+            swiper.on("slideChange", () => setActiveIndex(swiper.activeIndex)); // Cập nhật index khi chuyển slide
+          }}
+        >
+          {images.map((img: string) => (
+            <div className="w-full py-3 flex justify-center" key={img}>
+              <img className=" object-cover h-[350px]" src={`${SERVER_HOST}/uploads/${img}`} />
             </div>
           ))}
         </SwiperWrapper>
       </div>
+
+      {/* Swiper thumbnails */}
       <div>
         <SwiperWrapper slidesPerView={5} spaceBetween={10} loop={false} pagination={false} navigation={true}>
-          {images.map((item, index) => (
-            <div className="w-full p-1 border border-gray2 rounded-lg" key={index}>
-              <img
-                className=" w-[55px] object-cover h-[55px]"
-                src="https://bizweb.dktcdn.net/thumb/large/100/429/689/products/galaxy-s21-plus-5g-bac-didongviet-1-719e9485-fd05-4c6d-bd44-7e5f6ed19132.jpg?v=1623565400993"
-              />
+          {images.map((img: string, index: number) => (
+            <div
+              key={img}
+              className={`w-full p-1 border rounded-lg cursor-pointer transition ${activeIndex === index ? "border-primary" : "border-gray-300"}`} // Thêm border khi active
+              onClick={() => {
+                swiperInstance?.slideTo(index);
+                setActiveIndex(index); // Cập nhật index khi click vào thumbnail
+              }}
+            >
+              <img className="w-[55px] object-cover h-[55px]" src={`${SERVER_HOST}/uploads/${img}`} />
             </div>
           ))}
         </SwiperWrapper>

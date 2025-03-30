@@ -17,12 +17,11 @@ const TabsCategory = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const responseCategory = await axios.get(`${SERVER_HOST}/category?limit=3&sort=position&order=ASC`);
-        const responseProduct = await axios.get(`${SERVER_HOST}/products?status=ACTIVE&categoryId=${responseCategory.data.data[0].id}`);
-        console.log({ responseProduct });
-        setProducts(responseProduct.data.data);
-        setCategories(responseCategory.data.data);
-        setActiveTab(responseCategory.data.data[0].id);
+        const responseCategory = await axios.get(`${SERVER_HOST}/categories?size=3&sort=position,desc&show=true`);
+        const responseProduct = await axios.get(`${SERVER_HOST}/products?status=ACTIVE&categoryId=${responseCategory.data.data.content[0].id}`);
+        setProducts(responseProduct.data.data.content);
+        setCategories(responseCategory.data.data.content);
+        setActiveTab(responseCategory.data.data.content[0].id);
       } catch (error) {
         console.log(error);
       } finally {
@@ -34,7 +33,7 @@ const TabsCategory = () => {
   const getProductsTab = async (id: number) => {
     setActiveTab(id);
     const responseProduct = await axios.get(`${SERVER_HOST}/products?status=ACTIVE&categoryId=${id}`);
-    setProducts(responseProduct.data.data);
+    setProducts(responseProduct.data.data.content);
   };
   if (isLoading) return <SnipperLoading />;
 

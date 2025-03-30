@@ -1,25 +1,39 @@
+import { useEffect, useState } from "react";
+import { IBanner } from "../../types/Banner";
 import SwiperWrapper from "./SwiperWrapper";
+import { SERVER_HOST } from "../../config/Url";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-const slides = [
-  {
-    image: "https://sadesign.vn/pictures/picfullsizes/2024/11/30/ybd1732939646.jpg",
-    title: "1",
-  },
-  {
-    image: "https://sadesign.vn/pictures/picfullsizes/2024/11/30/ybd1732939646.jpg",
-    title: "2",
-  },
-  {
-    image: "https://sadesign.vn/pictures/picfullsizes/2024/11/30/ybd1732939646.jpg",
-    title: "3",
-  },
-];
-
-const Carousel = () => {
+const BanerItem = ({ banner }: { banner: IBanner }) => {
   return (
-    <SwiperWrapper slidesPerView={1} navigation={false}>
-      {slides.map((slide, index) => (
-        <img key={index} className="h-[400px] object-cover w-full" src={slide.image} alt={slide.title} />
+    <Link to={`${banner.link}`}>
+      <img className="h-[400px] object-cover w-full" src={`${SERVER_HOST}/uploads/${banner.image}`} alt={banner.link} />
+    </Link>
+  );
+};
+const Carousel = () => {
+  const [banner, setBanner] = useState<IBanner[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`${SERVER_HOST}/banners?position=HEADER`);
+        setBanner(response.data.data.content);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+  if (isLoading) return <div>Loading...</div>;
+  return (
+    <SwiperWrapper slidesPerView={1} spaceBetween={0} navigation={false}>
+      {banner.map((banner) => (
+        <BanerItem key={banner.id} banner={banner} />
       ))}
     </SwiperWrapper>
   );

@@ -8,9 +8,9 @@ const ItemProductSlide = ({ product, shadow = false }: { product: IProduct; shad
   const [open, setOpen] = useState(false);
 
   return (
-    <Link to={"/"} className={`block relative bg-white w-full rounded p-2 ${shadow && "shadow-lg"} `} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+    <Link to={`/san-pham/${product.id}`} className={`block relative bg-white w-full rounded p-2 ${shadow && "shadow-lg"} `} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <div className="w-full h-[230px] p-3 mb-2 overflow-hidden">
-        <img className={`scale-100 w-full h-full object-cover ${open && "scale-110"} duration-500`} src={`${SERVER_HOST}/${JSON.parse(product.image)[0]}`} alt="Product" />
+        <img className={`scale-100 w-full h-full object-cover ${open && "scale-110"} duration-500`} src={`${SERVER_HOST}/uploads/${JSON.parse(product.image)[0]}`} alt="Product" />
       </div>
       <div>
         <p className="font-bold text-[15px] leading-5 text-gray1 line-clamp-2 h-[40px]">{product.name}</p>

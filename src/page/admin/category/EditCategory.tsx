@@ -9,17 +9,18 @@ import { useParams } from "react-router-dom";
 import { ICategory } from "../../../types/Category";
 import ImageUploaderEdit from "../../../components/admin/ImageUploaderEdit";
 import SnipperLoading from "../../../components/admin/SnipperLoading";
+import toast from "react-hot-toast";
 
 // ✅ Sửa lại schema validation (chỉ một ảnh)
 const productSchema = z.object({
   name: z.string().min(3, "Tên danh mục phải có ít nhất 3 ký tự"),
   image: z.instanceof(File, { message: "Vui lòng chọn 1 ảnh" }).optional(),
-  isShowHome: z.string(),
+  showHome: z.string(),
   position: z
     .preprocess((val) => {
       if (typeof val === "string" && val.trim() === "") return undefined;
       return Number(val);
-    }, z.number().min(1, "Từ 1 đến 100").max(100, "Từ 1 đến 100"))
+    }, z.number().min(0, "Từ 0 đến 100").max(100, "Từ 0 đến 100"))
     .optional()
     .or(z.literal("")),
 });
@@ -38,7 +39,7 @@ const EditCategory = () => {
     defaultValues: {
       name: "",
       image: undefined,
-      isShowHome: "false",
+      showHome: "false",
     },
   });
   const [categories, setCategories] = useState<ICategory>();
@@ -48,7 +49,7 @@ const EditCategory = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const responseCategory = await axios.get(`${SERVER_HOST}/category/${id}`);
+        const responseCategory = await axios.get(`${SERVER_HOST}/categories/${id}`);
         const categoryData: ICategory = responseCategory.data.data;
 
         setCategories(categoryData);
@@ -57,7 +58,7 @@ const EditCategory = () => {
         reset({
           name: categoryData.name || "",
           position: categoryData.position ?? "",
-          isShowHome: categoryData.isShowHome ? "true" : "false",
+          showHome: categoryData.showHome ? "true" : "false",
           image: undefined,
         });
       } catch (error) {
@@ -71,20 +72,22 @@ const EditCategory = () => {
   const onSubmit = async (data: ProductFormValues) => {
     // Chuyển dữ liệu thành FormData
     const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("isShowHome", data.isShowHome);
+    const category = {
+      name: data.name,
+      showHome: data.showHome == "true" ? true : false,
+      position: data.position,
+    };
+    formData.append("category", new Blob([JSON.stringify(category)], { type: "application/json" }));
 
-    if (data.image) formData.append("image", data.image);
-    if (data.position !== undefined && data.position !== "") {
-      formData.append("position", String(data.position));
-    }
+    if (data.image) formData.append("file", data.image);
+
     try {
-      const response = await axios.patch(`${SERVER_HOST}/category/${id}`, formData, {
+      const response = await axios.put(`${SERVER_HOST}/categories/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
+      toast.success("Sửa thành công");
       console.log("Phản hồi từ server:", response.data);
     } catch (error) {
       console.error("Lỗi khi gửi sản phẩm:", error);
@@ -116,7 +119,7 @@ const EditCategory = () => {
             <div>
               <div className="flex items-center mb-4">
                 <input
-                  {...register("isShowHome")}
+                  {...register("showHome")}
                   id="discount-no"
                   type="radio"
                   value="false"
@@ -128,7 +131,7 @@ const EditCategory = () => {
               </div>
               <div className="flex items-center">
                 <input
-                  {...register("isShowHome")}
+                  {...register("showHome")}
                   id="discount-yes"
                   type="radio"
                   value="true"

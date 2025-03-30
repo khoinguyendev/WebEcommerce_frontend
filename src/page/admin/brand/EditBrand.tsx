@@ -34,7 +34,7 @@ const EditBrand = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${SERVER_HOST}/brand/${id}`);
+        const response = await axios.get(`${SERVER_HOST}/brands/${id}`);
         const branData = response.data.data;
         reset({
           name: branData.name || "",
@@ -49,11 +49,11 @@ const EditBrand = () => {
   }, [id]);
   const onSubmit = async (data: BrandFormValues) => {
     try {
-      const response = await axios.patch(`${SERVER_HOST}/brand/${id}`, data);
+      const response = await axios.put(`${SERVER_HOST}/brands/${id}`, data);
       toast.success("Sửa thành công");
       console.log("Phản hồi từ server:", response.data);
     } catch (error: any) {
-      if (error.response.data.statusCode === 409) toast.error("Tên đã tồn tại");
+      if (error.response.data.code === 404) toast.error("Tên đã tồn tại");
       else toast.error("Internal server error");
     }
   };

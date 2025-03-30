@@ -12,6 +12,7 @@ import { IProduct } from "../../../types/Product";
 import { useParams } from "react-router-dom";
 import SnipperLoading from "../../../components/admin/SnipperLoading";
 import MultiImageUploaderEdit from "../../../components/admin/MultiImageUploaderEdit";
+import EditFroalaEditors from "./EditFroalaEditor";
 
 // ✅ Định nghĩa schema validation bằng Zod
 const productSchema = z
@@ -30,6 +31,7 @@ const productSchema = z
     brandId: z.number().positive("Vui lòng chọn 1 thương hiệu"),
     isDiscount: z.string(),
     status: z.string(),
+    stock: z.number().min(1, "Số lượng >=0"),
   })
   .refine(
     (data) => {
@@ -61,6 +63,7 @@ const EditProduct = () => {
       categoryId: 0,
       brandId: 0,
       isDiscount: "false",
+      stock: 0,
     },
   });
   const [categories, setCategories] = useState<ICategory[]>([]);
@@ -75,13 +78,14 @@ const EditProduct = () => {
       try {
         const responseProduct = await axios.get(`${SERVER_HOST}/products/${id}`);
         const productData: IProduct = responseProduct.data.data;
-        const responseCategory = await axios.get(`${SERVER_HOST}/category`);
-        const categoryData = responseCategory.data.data;
-        const responseBrand = await axios.get(`${SERVER_HOST}/brand`);
+        const responseCategory = await axios.get(`${SERVER_HOST}/categories`);
+        const categoryData = responseCategory.data.data.content;
+        const responseBrand = await axios.get(`${SERVER_HOST}/brands`);
         const brandData = responseBrand.data.data;
         setCategories(categoryData);
         setBrands(brandData);
         setProduct(productData);
+        setDetail(productData.detail);
         reset({
           price: productData.price || 0,
           priceDiscount: productData?.priceDiscount || undefined,
@@ -91,8 +95,9 @@ const EditProduct = () => {
           description: productData?.description || "",
           detail: productData?.detail || "",
           status: productData.status,
-          isDiscount: productData?.isDiscount ? "true" : "false",
+          isDiscount: productData?.discount ? "true" : "false",
           image: undefined,
+          stock: productData?.stock || 0,
         });
       } catch (error) {
         console.log(error);
@@ -116,29 +121,48 @@ const EditProduct = () => {
       }
     }
     const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("price", data.price.toString());
-    formData.append("isDiscount", data.isDiscount);
-    formData.append("categoryId", data.categoryId.toString());
-    formData.append("brandId", data.brandId.toString());
-    formData.append("status", data.status);
-    if (data.priceDiscount) formData.append("priceDiscount", data.priceDiscount.toString());
-    if (data.detail) formData.append("detail", data.detail);
-    if (data.description) formData.append("description", data.description);
-    if (imageDelete.length > 0) {
-      imageDelete.forEach((image) => {
-        formData.append("imageDelete[]", image);
-      });
-    }
-    // Đính kèm tất cả ảnh vào FormData
+    // formData.append("name", data.name);
+    // formData.append("price", data.price.toString());
+    // formData.append("isDiscount", data.isDiscount);
+    // formData.append("categoryId", data.categoryId.toString());
+    // formData.append("brandId", data.brandId.toString());
+    // formData.append("status", data.status);
+    // if (data.priceDiscount) formData.append("priceDiscount", data.priceDiscount.toString());
+    // if (data.detail) formData.append("detail", data.detail);
+    // if (data.description) formData.append("description", data.description);
+    // if (imageDelete.length > 0) {
+    //   imageDelete.forEach((image) => {
+    //     formData.append("imageDelete[]", image);
+    //   });
+    // }
+    // // Đính kèm tất cả ảnh vào FormData
+    // if (data.image && data.image.length > 0) {
+    //   data.image.forEach((file) => {
+    //     formData.append("image", file);
+    //   });
+    // }
+    const product2 = {
+      name: data.name,
+      price: data.price,
+      discount: data.isDiscount == "true" ? true : false,
+      categoryId: data.categoryId,
+      brandId: data.brandId,
+      status: data.status,
+      detail: detail,
+      priceDiscount: data.priceDiscount,
+      description: data.description,
+      imageDelete: imageDelete,
+      stock: data.stock,
+    };
+    console.log("Dữ liệu sản phẩm:", product2);
+    formData.append("product", new Blob([JSON.stringify(product2)], { type: "application/json" }));
     if (data.image && data.image.length > 0) {
       data.image.forEach((file) => {
-        formData.append("image", file);
+        formData.append("files", file);
       });
     }
-
     try {
-      const response = await axios.patch(`${SERVER_HOST}/products/${id}`, formData, {
+      const response = await axios.put(`${SERVER_HOST}/products/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -148,16 +172,16 @@ const EditProduct = () => {
       toast.success("Đã cập nhật");
     } catch (error: any) {
       console.error("Lỗi khi gửi sản phẩm:", error);
-      if (error.response.data.statusCode === 409) toast.error("Tên đã tồn tại");
+      if (error.response.data.code === 404) toast.error("Tên đã tồn tại");
       else toast.error("Internal server error");
     }
   };
+  const [detail, setDetail] = useState<string>("");
 
   const price = watch("price");
   const priceDiscount = watch("priceDiscount");
   const categoryId = watch("categoryId");
   const description = watch("description");
-  const detail = watch("detail");
   const brandId = watch("brandId");
   const isDiscount = watch("isDiscount");
   const status = watch("status");
@@ -280,6 +304,23 @@ const EditProduct = () => {
             </div>
           )}
           <div className="mb-2">
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tồn kho</label>
+            <input
+              type="number"
+              {...register("stock", { valueAsNumber: true })}
+              className="bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:text-white"
+              placeholder="Nhập giá"
+            />
+            {errors.stock && <p className="text-red text-sm mt-1">{errors.stock.message}</p>}
+          </div>
+        </div>
+
+        {/* Ảnh sản phẩm */}
+        <div>
+          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ảnh sản phẩm</label>
+          <MultiImageUploaderEdit setValue={setValue} defaultImages={product?.image} setImageDelete={setImageDelete} />
+          {errors.image && <p className="text-red text-sm mt-1">{errors.image.message}</p>}
+          <div className="mb-2">
             <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               Mô tả
             </label>
@@ -291,18 +332,7 @@ const EditProduct = () => {
               className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             />
           </div>
-          <div className="mb-2">
-            <label htmlFor="detail" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Chi tiết
-            </label>
-            <textarea
-              {...register("detail")}
-              id="detail"
-              value={detail}
-              rows={4}
-              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            />
-          </div>
+
           <div className="mb-2">
             <label htmlFor="category-create" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               Xuất bản
@@ -317,19 +347,16 @@ const EditProduct = () => {
             </select>
             {errors.categoryId && <p className="text-red text-sm mt-1">{errors.categoryId.message}</p>}
           </div>
-          {/* Nút submit */}
+        </div>
+        <div className="col-span-2">
+          <EditFroalaEditors detail={detail} setDetail={setDetail} />
+        </div>
+        <div className="col-span-2">
           <div className="flex gap-4 my-4">
             <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
               Cập nhật
             </button>
           </div>
-        </div>
-
-        {/* Ảnh sản phẩm */}
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ảnh sản phẩm</label>
-          <MultiImageUploaderEdit setValue={setValue} defaultImages={product?.image} setImageDelete={setImageDelete} />
-          {errors.image && <p className="text-red text-sm mt-1">{errors.image.message}</p>}
         </div>
       </form>
     </div>

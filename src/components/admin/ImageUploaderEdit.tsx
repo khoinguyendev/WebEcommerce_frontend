@@ -8,7 +8,7 @@ interface ImageUploaderEditProps {
 
 const ImageUploaderEdit = ({ setValue, defaultImage }: ImageUploaderEditProps) => {
   const [image, setImage] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(defaultImage ? `${SERVER_HOST}/${defaultImage}` : null);
+  const [previewImage, setPreviewImage] = useState<string | null>(defaultImage ? `${SERVER_HOST}/uploads/${defaultImage}` : null);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {

@@ -6,7 +6,10 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"), // Cấu hình @ trỏ tới thư mục src
+      "@": path.resolve(__dirname, "./src"), // Cấu hình @ trỏ tới thư mục src
     },
+  },
+  optimizeDeps: {
+    include: ["react-froala-wysiwyg", "froala-editor"],
   },
 });

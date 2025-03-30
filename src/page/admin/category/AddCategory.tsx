@@ -6,6 +6,7 @@ import { SERVER_HOST } from "../../../config/Url";
 import ImageUploader from "../../../components/admin/ImageUploader";
 import ButtonLoading from "../../../components/admin/ButtonLoading";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 // ✅ Sửa lại schema validation (chỉ một ảnh)
 const productSchema = z.object({
@@ -42,19 +43,21 @@ const AddCategory = () => {
   const onSubmit = async (data: ProductFormValues) => {
     // Chuyển dữ liệu thành FormData
     const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("image", data.image);
-    formData.append("isShowHome", data.isShowHome);
-    if (data.position !== undefined && data.position !== "") {
-      formData.append("position", String(data.position));
-    }
+    const category = {
+      name: data.name,
+      showHome: data.isShowHome,
+      position: data.position,
+    };
+    formData.append("category", new Blob([JSON.stringify(category)], { type: "application/json" }));
+    formData.append("file", data.image);
+
     try {
-      const response = await axios.post(`${SERVER_HOST}/category`, formData, {
+      const response = await axios.post(`${SERVER_HOST}/categories`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
+      toast.success("Thêm thành công");
       console.log("Phản hồi từ server:", response.data);
       reset();
       setResetTrigger((prev) => !prev);

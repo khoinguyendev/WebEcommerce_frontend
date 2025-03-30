@@ -1,29 +1,34 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import "swiper/swiper-bundle.css";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
+import { Swiper as SwiperClass } from "swiper";
 
 interface SwiperWrapperProps {
-  children: ReactNode[];
+  children: ReactNode;
   slidesPerView?: number;
   loop?: boolean;
   navigation?: boolean;
   pagination?: boolean;
   spaceBetween?: number;
+  onSwiper?: (swiper: SwiperClass) => void; // Thêm prop nhận instance
 }
 
-const SwiperWrapper = ({ children, pagination = true, slidesPerView = 1, loop = true, spaceBetween = 10, navigation = true }: SwiperWrapperProps) => {
+const SwiperWrapper = ({ children, pagination = true, slidesPerView = 1, loop = true, spaceBetween = 10, navigation = true, onSwiper }: SwiperWrapperProps) => {
   return (
     <Swiper
       modules={[Navigation, Pagination, Scrollbar, A11y]}
       spaceBetween={spaceBetween}
       slidesPerView={slidesPerView}
-      pagination={pagination ? { clickable: true } : undefined} // Chỉ thêm pagination khi cần
+      pagination={pagination ? { clickable: true } : undefined}
       loop={loop}
-      navigation={navigation ? true : undefined}
+      navigation={navigation}
+      onSwiper={onSwiper} // Truyền instance ra ngoài
       className="hh"
     >
-      {children && children.map((child, index) => <SwiperSlide key={index}>{child}</SwiperSlide>)}
+      {React.Children.toArray(children).map((child, index) => (
+        <SwiperSlide key={index}>{child}</SwiperSlide>
+      ))}
     </Swiper>
   );
 };
